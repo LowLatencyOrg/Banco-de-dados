@@ -65,6 +65,15 @@ CONSTRAINT chk_contato_dono
 		   (fk_empresa IS NULL AND fk_usuario IS NOT NULL))
 );
 
+CREATE TABLE fale_conosco(
+id_fale_conosco INT PRIMARY KEY AUTO_INCREMENT,
+nome VARCHAR(200),
+email VARCHAR(200),
+telefone VARCHAR(20),
+empresa VARCHAR(200),
+data_envio DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE endereco(
 id_endereco INT PRIMARY KEY AUTO_INCREMENT,
 cep CHAR(8) NOT NULL,
@@ -183,7 +192,17 @@ CONSTRAINT fk_leitura_unidade_medida
         REFERENCES unidade_medida(id_unidade)
 );
 
+INSERT INTO empresa (razao_social, nome_fantasia, apelido, cnpj, email) 
+VALUES ('B3 S.A. - Brasil, Bolsa, Balcao', 'B3', 'Bolsa BR', '09346601000125', 'contato@b3.com.br');
 
+INSERT INTO cargo (descricao) VALUES ('Gestor');
+INSERT INTO cargo (descricao) VALUES ('Analista de Infraestrutura');
 
+INSERT INTO tipo_contato (descricao) VALUES ('Celular');
+INSERT INTO tipo_contato (descricao) VALUES ('Telefone Fixo');
 
+INSERT INTO usuario (nome, cpf, email, senha, fk_empresa, fk_cargo) 
+VALUES ('Gestor de Operacoes', '11122233344', 'gestor@b3.com.br', '12345', 1, 1);
 
+INSERT INTO contato (numero, fk_empresa, fk_usuario, fk_tipo_contato) 
+VALUES ('11999990000', NULL, 1, 1);
