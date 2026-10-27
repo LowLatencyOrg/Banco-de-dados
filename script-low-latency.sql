@@ -1,4 +1,6 @@
-CREATE DATABASE lowLatency;
+DROP DATABASE IF EXISTS lowLatency;
+
+CREATE DATABASE lowLatency;  
 
 -- drop database lowLatency;
 
@@ -244,24 +246,59 @@ insert into status_servidor values
 	(default, 'ativo'),
     (default, 'inativo'),
     (default, 'manutenção');
+    
+    
+ 
+insert into servidor values 
+(default, 'matching-engine-01', '02F1031522A9', 1, 1, 1),
+(default, 'market-data-01', '18C10D153B9F', 1, 1, 1);
 
 insert into metrica values 
 (default, 'uso em %'),
-(default, 'frequencia em GHz');
+(default, 'frequencia em GHz'),
+(default, 'qtd pacotes recebidos em MB'),
+(default, 'qtd pacotes enviados em MB');
 
 insert into componente values
 (default, 'cpu'),
-(default, 'ram');
+(default, 'ram'),
+(default, 'disco'),
+(default, 'rede');
 
 insert into alerta values 
+(default, 'normal', 'verde'),
 (default, 'alerta', 'laranja'),
 (default, 'critico', 'vermelho');
+
+insert into unidade_medida values 
+(default, '%'),
+(default, 'GHz'),
+(default, 'MB');
+
+INSERT INTO servidor_componente (fk_servidor, fk_componente) VALUES 
+(1, 4), 
+(2, 4);
+
+INSERT INTO componente_metrica (fk_componente, fk_metrica) VALUES 
+(4, 3), 
+(4, 4);
+
+
+CREATE USER IF NOT EXISTS 'client_java'@'%' IDENTIFIED BY 'Sptech#2026';
+GRANT INSERT ON lowLatency.leitura TO 'client_java'@'%';
+FLUSH PRIVILEGES;    
+
+CREATE USER IF NOT EXISTS 'script_python'@'%' IDENTIFIED BY 'Sptech#2026';
+GRANT INSERT ON lowLatency.leitura TO 'script_python'@'%';
+FLUSH PRIVILEGES; 
 
 select * from servidor_componente;
 select * from empresa_componente;
 select * from componente_metrica;
 select * from limite;
 select * from servidor;
+select * from leitura;
+
 
 
 
