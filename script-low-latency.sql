@@ -256,8 +256,8 @@ insert into servidor values
 insert into metrica values 
 (default, 'uso em %'),
 (default, 'frequencia em GHz'),
-(default, 'qtd pacotes recebidos em MB'),
-(default, 'qtd pacotes enviados em MB');
+(default, 'qtd pacotes recebidos em KB'),
+(default, 'qtd pacotes enviados em KB');
 
 insert into componente values
 (default, 'cpu'),
@@ -273,7 +273,7 @@ insert into alerta values
 insert into unidade_medida values 
 (default, '%'),
 (default, 'GHz'),
-(default, 'MB');
+(default, 'KB');
 
 INSERT INTO servidor_componente (fk_servidor, fk_componente) VALUES 
 (1, 4), 
