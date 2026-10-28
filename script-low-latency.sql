@@ -276,7 +276,7 @@ insert into alerta values
 insert into unidade_medida values 
 (default, '%'),
 (default, 'Double'),
-(default, 'MB/s')
+(default, 'MB/s'),
 (default, 'KB');
 
 INSERT INTO servidor_componente (fk_servidor, fk_componente) VALUES 
