@@ -283,8 +283,8 @@ INSERT INTO servidor_componente (fk_servidor, fk_componente) VALUES
 (2, 4);
 
 INSERT INTO componente_metrica (fk_componente, fk_metrica) VALUES 
-(4, 3), 
-(4, 4);
+(4, 6), 
+(4, 7);
 
 
 CREATE USER IF NOT EXISTS 'client_java'@'%' IDENTIFIED BY 'Sptech#2026';
