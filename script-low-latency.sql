@@ -280,11 +280,24 @@ insert into unidade_medida values
 
 INSERT INTO servidor_componente (fk_servidor, fk_componente) VALUES 
 (1, 4), 
-(2, 4);
+(2, 4),
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 2),
+(2, 3);
 
 INSERT INTO componente_metrica (fk_componente, fk_metrica) VALUES 
 (4, 6), 
-(4, 7);
+(4, 7),
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 1),
+(2, 4),
+(3, 1),
+(3, 5);
 
 
 CREATE USER IF NOT EXISTS 'client_java'@'%' IDENTIFIED BY 'Sptech#2026';
