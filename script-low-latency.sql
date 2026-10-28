@@ -254,10 +254,13 @@ insert into servidor values
 (default, 'market-data-01', '18C10D153B9F', 1, 1, 1);
 
 insert into metrica values 
-(default, 'uso em %'),
-(default, 'frequencia em GHz'),
-(default, 'qtd pacotes recebidos em KB'),
-(default, 'qtd pacotes enviados em KB');
+(default, 'Uso (%)'),
+(default, 'Interrupções de software (%)'),
+(default, 'IOWait'),
+(default, 'Uso da SWAP (%)'),
+(default, 'IOPS (MB/s)'),
+(default, 'Pacotes Enviados (KB)'),
+(default, 'Pacotes Recebidos (KB)');
 
 insert into componente values
 (default, 'cpu'),
