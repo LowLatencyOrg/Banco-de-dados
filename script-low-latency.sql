@@ -80,6 +80,19 @@ CONSTRAINT fk_endereco_empresa
 	FOREIGN KEY (fk_empresa)
 		REFERENCES empresa(id_empresa)
 );
+CREATE TABLE slack (
+id INT PRIMARY KEY AUTO_INCREMENT,
+titulo VARCHAR(45) NOT NULL,
+conteudo VARCHAR(45) NOT NULL,
+canal VARCHAR(45) NOT NULL,
+fk_empresa INT NOT NULL,
+
+CONSTRAINT fk_empresa
+FOREIGN KEY (fk_empresa)
+REFERENCES empresa(id_empresa)
+
+);
+
 
 CREATE TABLE status_servidor(
 id_status INT PRIMARY KEY AUTO_INCREMENT, 
