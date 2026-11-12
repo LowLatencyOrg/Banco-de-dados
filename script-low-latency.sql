@@ -329,6 +329,28 @@ select * from limite;
 select * from servidor;
 select * from leitura;
 
+CREATE VIEW view_apresentacao AS
+SELECT 
+    l.id_leitura,
+    s.hostname AS Servidor,
+    c.nome AS Componente,
+    m.descricao AS Metrica,
+    l.valor AS Valor,
+    u.descricao AS "Unidade Medida",
+    l.dia_hora AS "Dia e Hora",
+    a.descricao AS Alerta,
+    a.cor AS "Cor do Alerta"
+FROM leitura l
+JOIN servidor s 
+    ON l.fk_servidor = s.id_servidor
+JOIN componente c 
+    ON l.fk_componente = c.id_componente
+JOIN metrica m 
+    ON l.fk_metrica = m.id_metrica
+JOIN unidade_medida u 
+    ON l.fk_unidade_medida = u.id_unidade
+JOIN alerta a 
+    ON l.fk_alerta = a.id_alerta;
 
 
 
