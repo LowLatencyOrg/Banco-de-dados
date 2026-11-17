@@ -9,7 +9,8 @@ id_empresa INT PRIMARY KEY AUTO_INCREMENT,
 razao_social VARCHAR(100) NOT NULL,
 nome_fantasia VARCHAR(100) NOT NULL,
 apelido VARCHAR(60) NOT NULL,
-cnpj CHAR(14) NOT NULL UNIQUE
+cnpj CHAR(14) NOT NULL UNIQUE,
+email VARCHAR(80)
 );
 
 CREATE TABLE cargo(
@@ -42,7 +43,7 @@ descricao VARCHAR(30) NOT NULL
 
 CREATE TABLE contato(
 id_contato INT  PRIMARY KEY AUTO_INCREMENT,
-descricao VARCHAR(45),
+numero VARCHAR(20),
 fk_empresa INT, 
 fk_usuario INT, 
 fk_tipo_contato INT NOT NULL, 
@@ -62,6 +63,15 @@ CONSTRAINT fk_contato_tipo
 CONSTRAINT chk_contato_dono
     CHECK ((fk_empresa IS NOT NULL AND fk_usuario IS NULL) OR
 		   (fk_empresa IS NULL AND fk_usuario IS NOT NULL))
+);
+
+CREATE TABLE fale_conosco(
+id_fale_conosco INT PRIMARY KEY AUTO_INCREMENT,
+nome VARCHAR(200),
+email VARCHAR(200),
+telefone VARCHAR(20),
+empresa VARCHAR(200),
+data_envio DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE endereco(
@@ -84,22 +94,12 @@ id_status INT PRIMARY KEY AUTO_INCREMENT,
 descricao VARCHAR(45)
 );
 
-CREATE TABLE sistema_operacional(
-id_sistema_operacional INT PRIMARY KEY AUTO_INCREMENT,
-nome VARCHAR(100) NOT NULL UNIQUE
-);
-
 CREATE TABLE servidor(
 id_servidor INT AUTO_INCREMENT PRIMARY KEY,
 hostname VARCHAR(50),
-mac_adress VARCHAR(45),
-fk_sistema_operacional INT NOT NULL,
+sistema_operacional VARCHAR(100),
 fk_empresa INT NOT NULL,
 fk_status INT NOT NULL, 
-
-CONSTRAINT fk_servidor_sistema_operacional
-	FOREIGN KEY (fk_sistema_operacional)
-        REFERENCES sistema_operacional(id_sistema_operacional),
 
 CONSTRAINT fk_servidor_status
 	FOREIGN KEY (fk_status) 
@@ -146,19 +146,14 @@ FOREIGN KEY (fk_metrica)
 PRIMARY KEY(fk_componente, fk_metrica)
 );
 
-CREATE TABLE alerta (
-    id_alerta INT PRIMARY KEY AUTO_INCREMENT,
-    descricao VARCHAR(45) NOT NULL,
-    cor VARCHAR(20) NOT NULL
-);
-
 CREATE TABLE limite(
 id_limite INT AUTO_INCREMENT PRIMARY KEY,
 fk_servidor INT NOT NULL,
 fk_componente INT NOT NULL,
 fk_metrica INT NOT NULL,
-fk_alerta INT NOT NULL,
 valor DECIMAL(10,2) NOT NULL,
+
+UNIQUE (fk_servidor, fk_componente, fk_metrica),
 
 CONSTRAINT fk_limite_servidor_componente
     FOREIGN KEY (fk_servidor, fk_componente)
@@ -166,11 +161,7 @@ CONSTRAINT fk_limite_servidor_componente
 
 CONSTRAINT fk_limite_componente_metrica
     FOREIGN KEY (fk_componente, fk_metrica)
-      REFERENCES componente_metrica(fk_componente, fk_metrica),
-
- CONSTRAINT fk_limite_alerta
-    FOREIGN KEY (fk_alerta)
-		REFERENCES alerta(id_alerta)
+      REFERENCES componente_metrica(fk_componente, fk_metrica)
 );
 
 CREATE TABLE unidade_medida(
@@ -186,11 +177,7 @@ fk_metrica INT NOT NULL,
 valor DECIMAL(10,2) NOT NULL,
 fk_unidade_medida INT NOT NULL, 
 dia_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-fk_alerta INT NOT NULL, 
-
-CONSTRAINT fk_leitura_alerta
-    FOREIGN KEY (fk_alerta)
-		REFERENCES alerta(id_alerta),
+alerta BOOLEAN,
 
 CONSTRAINT fk_leitura_servidor_componente
     FOREIGN KEY (fk_servidor, fk_componente)
@@ -205,25 +192,17 @@ CONSTRAINT fk_leitura_unidade_medida
         REFERENCES unidade_medida(id_unidade)
 );
 
-CREATE TABLE empresa_componente(
-    fk_empresa INT NOT NULL,
-    fk_componente INT NOT NULL,
+INSERT INTO empresa (razao_social, nome_fantasia, apelido, cnpj, email) 
+VALUES ('B3 S.A. - Brasil, Bolsa, Balcao', 'B3', 'Bolsa BR', '09346601000125', 'contato@b3.com.br');
 
-    PRIMARY KEY (fk_empresa, fk_componente),
+INSERT INTO cargo (descricao) VALUES ('Gestor');
+INSERT INTO cargo (descricao) VALUES ('Analista de Infraestrutura');
 
-    CONSTRAINT fk_empresa_componente_empresa
-        FOREIGN KEY (fk_empresa)
-        REFERENCES empresa(id_empresa),
+INSERT INTO tipo_contato (descricao) VALUES ('Celular');
+INSERT INTO tipo_contato (descricao) VALUES ('Telefone Fixo');
 
-    CONSTRAINT fk_empresa_componente_componente
-        FOREIGN KEY (fk_componente)
-        REFERENCES componente(id_componente)
-);
+INSERT INTO usuario (nome, cpf, email, senha, fk_empresa, fk_cargo) 
+VALUES ('Gestor de Operacoes', '11122233344', 'gestor@b3.com.br', '12345', 1, 1);
 
-
-    
-
-
-
-
-
+INSERT INTO contato (numero, fk_empresa, fk_usuario, fk_tipo_contato) 
+VALUES ('11999990000', NULL, 1, 1);
