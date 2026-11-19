@@ -351,9 +351,3 @@ JOIN unidade_medida u
     ON l.fk_unidade_medida = u.id_unidade
 JOIN alerta a 
     ON l.fk_alerta = a.id_alerta;
-
-
-
-
-
-
