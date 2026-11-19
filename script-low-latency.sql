@@ -316,10 +316,12 @@ INSERT INTO componente_metrica (fk_componente, fk_metrica) VALUES
 
 CREATE USER IF NOT EXISTS 'client_java'@'%' IDENTIFIED BY 'Sptech#2026';
 GRANT INSERT ON lowLatency.leitura TO 'client_java'@'%';
-FLUSH PRIVILEGES;    
+GRANT INSERT ON lowLatency.slack TO 'client_java'@'%';
 
 CREATE USER IF NOT EXISTS 'script_python'@'%' IDENTIFIED BY 'Sptech#2026';
 GRANT INSERT ON lowLatency.leitura TO 'script_python'@'%';
+GRANT INSERT ON lowLatency.slack TO 'script_python'@'%';
+
 FLUSH PRIVILEGES; 
 
 select * from servidor_componente;
