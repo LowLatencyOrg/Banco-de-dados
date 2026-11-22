@@ -235,6 +235,17 @@ CREATE TABLE empresa_componente(
         REFERENCES componente(id_componente)
 );
 
+CREATE TABLE ranking_processos(
+	id_ranking INT PRIMARY KEY AUTO_INCREMENT,
+    fk_servidor INT,
+    posicao INT,
+    pid INT,
+    usuario VARCHAR(100),
+    cpu_porcent DOUBLE(5, 2),
+    ram_porcent DOUBLE(5, 2),
+    dia_hora DATETIME,
+    CONSTRAINT fk_servidor_ranking_processos FOREIGN KEY (fk_servidor) REFERENCES servidor(id_servidor));
+
 
 INSERT INTO empresa (razao_social, nome_fantasia, apelido, cnpj) 
 VALUES ('B3 S.A. - Brasil, Bolsa, Balcao', 'B3', 'Bolsa BR', '09346601000125');
@@ -273,13 +284,18 @@ insert into metrica values
 (default, 'Uso da SWAP (%)'),
 (default, 'IOPS (MB/s)'),
 (default, 'Pacotes Enviados (KB)'),
-(default, 'Pacotes Recebidos (KB)');
+(default, 'Pacotes Recebidos (KB)'),
+(default, 'Pacotes Perdidos'),
+(default, 'Pacotes com Rrro'),
+(default, 'Top5 Processos'),
+(default, 'Processos zumbis');
 
 insert into componente values
 (default, 'cpu'),
 (default, 'ram'),
 (default, 'disco'),
-(default, 'rede');
+(default, 'rede'),
+(default, 'processos');
 
 insert into alerta values 
 (default, 'normal', 'verde'),
@@ -290,7 +306,8 @@ insert into unidade_medida values
 (default, '%'),
 (default, 'Double'),
 (default, 'MB/s'),
-(default, 'KB');
+(default, 'KB'),
+(default, 'INT');
 
 INSERT INTO servidor_componente (fk_servidor, fk_componente) VALUES 
 (1, 4), 
