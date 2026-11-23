@@ -27,6 +27,7 @@ email VARCHAR(80),
 senha VARCHAR(255) NOT NULL,
 fk_empresa INT NOT NULL,
 fk_cargo INT NOT NULL, 
+ativo BOOLEAN NOT NULL DEFAULT TRUE,
 
 CONSTRAINT fk_usuario_empresa 
 	FOREIGN KEY (fk_empresa) 	
@@ -247,6 +248,23 @@ CREATE TABLE ranking_processos(
     CONSTRAINT fk_servidor_ranking_processos FOREIGN KEY (fk_servidor) REFERENCES servidor(id_servidor));
 
 
+CREATE TABLE servidor_componente_metrica (
+    fk_servidor INT NOT NULL,
+    fk_componente INT NOT NULL,
+    fk_metrica INT NOT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+
+    PRIMARY KEY (fk_servidor, fk_componente, fk_metrica),
+
+    CONSTRAINT fk_scm_servidor_componente
+        FOREIGN KEY (fk_servidor, fk_componente)
+        REFERENCES servidor_componente(fk_servidor, fk_componente),
+
+    CONSTRAINT fk_scm_componente_metrica
+        FOREIGN KEY (fk_componente, fk_metrica)
+        REFERENCES componente_metrica(fk_componente, fk_metrica)
+);
+
 INSERT INTO empresa (razao_social, nome_fantasia, apelido, cnpj) 
 VALUES ('B3 S.A. - Brasil, Bolsa, Balcao', 'B3', 'Bolsa BR', '09346601000125');
 
@@ -257,7 +275,7 @@ INSERT INTO tipo_contato (descricao) VALUES ('Celular');
 INSERT INTO tipo_contato (descricao) VALUES ('Telefone Fixo');
 
 INSERT INTO usuario (nome, cpf, email, senha, fk_empresa, fk_cargo) 
-VALUES ('Gestor de Operacoes', '11122233344', 'gestor@b3.com.br', '12345', 1, 1);
+VALUES ('João', '11122233344', 'gestor@b3.com.br', '12345', 1, 1);
 
 INSERT INTO contato (fk_empresa, fk_usuario, fk_tipo_contato) 
 VALUES (NULL, 1, 1);
@@ -370,3 +388,102 @@ JOIN unidade_medida u
     ON l.fk_unidade_medida = u.id_unidade
 JOIN alerta a 
     ON l.fk_alerta = a.id_alerta;
+    
+    
+-- select para vizualizar edição de componente 
+SELECT
+    s.hostname AS Servidor,
+    c.nome AS Componente,
+    m.descricao AS Metrica,
+    a.descricao AS Classificacao,
+    l.valor AS Valor_Limite
+FROM limite l
+INNER JOIN servidor s
+    ON s.id_servidor = l.fk_servidor
+INNER JOIN componente c
+    ON c.id_componente = l.fk_componente
+INNER JOIN metrica m
+    ON m.id_metrica = l.fk_metrica
+INNER JOIN alerta a
+    ON a.id_alerta = l.fk_alerta
+WHERE
+    l.fk_servidor = 1
+    AND l.fk_componente = 1
+    AND l.fk_metrica = 1;
+    
+    
+-- select para vizualizar edição de usuário 
+SELECT
+    u.id_usuario,
+    u.nome,
+    u.cpf,
+    u.email,
+    c.descricao AS cargo,
+    e.nome_fantasia AS empresa
+FROM usuario u
+INNER JOIN cargo c
+    ON u.fk_cargo = c.id_cargo
+INNER JOIN empresa e
+    ON u.fk_empresa = e.id_empresa
+WHERE u.id_usuario = 1;
+
+-- select para vizualizar soft delete de servidor 
+SELECT
+    s.id_servidor,
+    s.hostname,
+    st.descricao AS status
+FROM servidor s
+INNER JOIN status_servidor st
+    ON s.fk_status = st.id_status;
+    
+-- select para listar apenas os usuário ativos (soft delete)
+
+SELECT
+    u.id_usuario,
+    u.nome,
+    u.cpf,
+    u.email,
+    c.descricao AS cargo,
+    e.nome_fantasia AS empresa
+FROM usuario u
+INNER JOIN cargo c
+    ON u.fk_cargo = c.id_cargo
+INNER JOIN empresa e
+    ON u.fk_empresa = e.id_empresa
+WHERE u.ativo = TRUE;
+
+INSERT IGNORE INTO servidor_componente_metrica
+    (fk_servidor, fk_componente, fk_metrica)
+SELECT
+    sc.fk_servidor,
+    sc.fk_componente,
+    cm.fk_metrica
+FROM servidor_componente sc
+INNER JOIN componente_metrica cm
+    ON cm.fk_componente = sc.fk_componente;
+    
+    SELECT *
+FROM servidor_componente_metrica
+ORDER BY fk_servidor, fk_componente, fk_metrica;
+
+-- select para vizualizar o soft delete de componente
+SELECT
+    scm.fk_servidor,
+    s.hostname,
+    scm.fk_componente,
+    c.nome AS componente,
+    scm.fk_metrica,
+    m.descricao AS metrica,
+    scm.ativo
+FROM servidor_componente_metrica scm
+INNER JOIN servidor s
+    ON s.id_servidor = scm.fk_servidor
+INNER JOIN componente c
+    ON c.id_componente = scm.fk_componente
+INNER JOIN metrica m
+    ON m.id_metrica = scm.fk_metrica
+ORDER BY s.hostname, c.nome, m.descricao;
+
+
+-- select para vizualizar o delete de servidor
+SELECT * FROM servidor;
