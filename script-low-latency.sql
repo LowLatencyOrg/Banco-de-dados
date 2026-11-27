@@ -354,6 +354,7 @@ GRANT INSERT ON lowLatency.leitura TO 'client_java'@'%';
 GRANT INSERT ON lowLatency.slack TO 'client_java'@'%';
 
 CREATE USER IF NOT EXISTS 'script_python'@'%' IDENTIFIED BY 'Sptech#2026';
+GRANT SELECT ON lowLatency.* TO 'script_python'@'%';
 GRANT INSERT ON lowLatency.leitura TO 'script_python'@'%';
 GRANT INSERT ON lowLatency.slack TO 'script_python'@'%';
 
