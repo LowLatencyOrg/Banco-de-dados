@@ -242,10 +242,12 @@ CREATE TABLE ranking_processos(
     posicao INT,
     pid INT,
     usuario VARCHAR(100),
+    nome_processo VARCHAR(100) DEFAULT 'desconhecido',
     cpu_porcent DOUBLE(5, 2),
     ram_porcent DOUBLE(5, 2),
     dia_hora DATETIME,
-    CONSTRAINT fk_servidor_ranking_processos FOREIGN KEY (fk_servidor) REFERENCES servidor(id_servidor));
+    CONSTRAINT fk_servidor_ranking_processos FOREIGN KEY (fk_servidor) REFERENCES servidor(id_servidor),
+    CONSTRAINT uk_servidor_posicao UNIQUE (fk_servidor, posicao));
 
 
 CREATE TABLE servidor_componente_metrica (
@@ -304,7 +306,7 @@ insert into metrica values
 (default, 'Pacotes Enviados (KB)'),
 (default, 'Pacotes Recebidos (KB)'),
 (default, 'Pacotes Perdidos'),
-(default, 'Pacotes com Rrro'),
+(default, 'Pacotes com Erro'),
 (default, 'Top5 Processos'),
 (default, 'Processos zumbis');
 
@@ -335,18 +337,49 @@ INSERT INTO servidor_componente (fk_servidor, fk_componente) VALUES
 (1, 3),
 (2, 1),
 (2, 2),
-(2, 3);
+(2, 3),
+(1, 5);
 
 INSERT INTO componente_metrica (fk_componente, fk_metrica) VALUES 
 (4, 6), 
 (4, 7),
+(4, 8),
+(4, 9),
 (1, 1),
 (1, 2),
 (1, 3),
 (2, 1),
 (2, 4),
 (3, 1),
-(3, 5);
+(3, 5),
+(5, 10),
+(5, 11);
+
+INSERT INTO limite (fk_servidor, fk_componente, fk_metrica, fk_alerta, valor) VALUES 
+(1, 1, 1, 2, 70),
+(1, 1, 1, 3, 90),
+(1, 1, 2, 2, 10),
+(1, 1, 2, 3, 20),
+(1, 1, 3, 2, 10),
+(1, 1, 3, 3, 25),
+(1, 2, 1, 2, 75),
+(1, 2, 1, 3, 90),
+(1, 2, 4, 2, 30),
+(1, 2, 4, 3, 60),
+(1, 3, 1, 2, 80),
+(1, 3, 1, 3, 95),
+(1, 3, 5, 2, 1000),
+(1, 3, 5, 3, 3000),
+(1, 4, 6, 2, 2000),
+(1, 4, 6, 3, 4000),
+(1, 4, 7, 2, 3000),
+(1, 4, 7, 3, 5000),
+(1, 4, 8, 2, 30),
+(1, 4, 8, 3, 50),
+(1, 4, 9, 2, 60),
+(1, 4, 9, 3, 80),
+(1, 5, 11, 2, 10),
+(1, 5, 11, 3, 50);
 
 
 CREATE USER IF NOT EXISTS 'client_java'@'%' IDENTIFIED BY 'Sptech#2026';
@@ -357,6 +390,7 @@ CREATE USER IF NOT EXISTS 'script_python'@'%' IDENTIFIED BY 'Sptech#2026';
 GRANT SELECT ON lowLatency.* TO 'script_python'@'%';
 GRANT INSERT ON lowLatency.leitura TO 'script_python'@'%';
 GRANT INSERT ON lowLatency.slack TO 'script_python'@'%';
+GRANT INSERT, UPDATE, DELETE ON lowLatency.ranking_processos TO 'script_python'@'%';
 
 FLUSH PRIVILEGES; 
 
@@ -366,6 +400,7 @@ select * from componente_metrica;
 select * from limite;
 select * from servidor;
 select * from leitura;
+select * from ranking_processos;
 
 CREATE VIEW view_apresentacao AS
 SELECT 
@@ -484,6 +519,8 @@ INNER JOIN componente c
 INNER JOIN metrica m
     ON m.id_metrica = scm.fk_metrica
 ORDER BY s.hostname, c.nome, m.descricao;
+
+
 
 
 -- select para vizualizar o delete de servidor
